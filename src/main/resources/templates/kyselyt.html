@@ -1,0 +1,179 @@
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+<title>Kyselyn kysymykset</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<link type="text/css" rel="stylesheet" href="/css/styles.css"
+	th:href="@{/css/styles.css}" />
+</head>
+
+
+<style>
+table, th, td {
+	border: 1px solid black;
+	font-family: Segoe UI;
+	font-size: 18px;
+}
+
+h2 {
+	font-family: Segoe UI;
+	padding-top: 25px;
+	padding-bottom: 25px;
+}
+
+h5 {
+	font-family: Segoe UI;
+	padding-top: 25px;
+}
+
+container {
+	font-family: Segoe UI;
+}
+
+table {
+	border-collapse: separate;
+	border-spacing: 0 15px;
+}
+
+table {
+	counter-reset: rowNumber;
+}
+
+#tableid tr::before {
+	display: table-cell;
+	counter-increment: rowNumber;
+	content: counter(rowNumber) ".";
+}
+
+.jumbotron {
+	display: flex;
+	align-items: center;
+	height: 250px;
+	background-image:
+		url("https://media.istockphoto.com/photos/survey-picture-id876886576?k=20&m=876886576&s=612x612&w=0&h=vtOAHdm_qBmQGkKkaqozkPRFpXllT1iMkNzBV9dgWk8=");
+	background-size: cover;
+	background-position: center;
+}
+
+.jumbotron2 {
+	display: flex;
+	align-items: center;
+	height: 150px;
+	background-image:
+		url("https://free-images.com/lg/70ee/shapes_blue_roof_top.jpg");
+	background-size: cover;
+	background-position: center;
+}
+</style>
+
+
+<body>
+
+
+	<!-- ----------	<div class="container-fluid"> </div>  jos haluaa sisennyksen/reunuksen yläpalkkiin vasemmalle ja oikealle--->
+	<section class="jumbotron">
+		<div class="container">
+			<div class="row text-center">
+				<!--jos haluaa tekstiä jumbotroniin keskitetysti -->
+				<br>
+			</div>
+		</div>
+	</section>
+
+		<div align="right">
+			<form th:action="@{/logout}" method="post">
+				<input class="btn btn-primary mr-sm-3" type="submit" value="Kirjaudu Ulos"/>
+			</form>
+		</div>
+
+	<div class="container">
+		<h2>
+			<b> Tervetuloa Verkkokyselypalveluun!</b>
+		</h2>
+		<br> <br>
+		<div class="row align-items-md-stretch">
+
+			<div class="col-md-5">
+				<div class="card border-dark mb-3"
+					style="width: 500px; height: 350px" sec:authorize="hasAuthority('ADMIN')">
+					<h5 class="card-header">Luo tästä uusi kysely:</h5>
+					<div class="card-body">
+
+						<!-- ------------------------------------------------------------------------------------------------------- -->
+						<!--  TALLENNA UUSI KYSELY ------ (tallenna-endpoint mutta uudelleenohjaa kyselyt.html)   - -->
+
+						<form th:action="@{tallenna}" action="#" method="post">
+							<div class="form-group pb-3">
+								<input class="form-control" type="text" id="nimi"
+									placeholder="Kyselyn nimi" th:field="${kysely.nimi}" required />
+								<br>
+
+								<textarea class="form-control" rows="4" id="kuvaus"
+									placeholder="Kyselyn kuvaus" th:field="${kysely.kuvaus}"
+									required></textarea>
+
+							</div>
+							<button class="btn btn-primary" type="submit">Luo</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- ------------------------------------------------------------------------------------------------------- -->
+		<!--  BOOTSTRAP-TAULUKKO   - -->
+		<div class="container-lista  pt-4">
+
+			<table class="table table-light table-hover table-bordered table-sm">
+				<thead class="table-dark">
+
+					<tr>
+						<th></th>
+						<th>Nimi</th>
+						<th>Kyselyn kuvaus</th>
+						<th>Kysymysten määrä</th>
+					</tr>
+				</thead>
+
+
+				<tbody id="tableid">
+
+
+					<!--  NÄYTÄ KYSELYT LISTALLA   -->
+					<tr th:each="kysely : ${kyselyt}">
+						<td><a th:href="@{/kysely/{id}(id=${kysely.id})}"
+							th:text="${kysely.nimi}"></a></td>
+						<td th:text="${kysely.kuvaus}"></td>
+						<td th:text="${kysely.getKysymyksetSize}"></td>
+						<td>
+							<!--  POISTA KYSELY  - --> <a class="btn btn-warning" sec:authorize="hasAuthority('ADMIN')"
+							th:href="@{/poista/kysely/{id}(id=${kysely.id})}">Poista</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<div class="container-fluid">
+		<section class="jumbotron2">
+			<div class="container"></div>
+		</section>
+	</div>
+</body>
+</html>
+
+
